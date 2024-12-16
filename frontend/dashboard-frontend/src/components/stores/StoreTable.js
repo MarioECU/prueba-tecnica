@@ -41,6 +41,7 @@ const StoreTable = ({ showMsg }) => {
         try {
             const p = await createStore(newStore);
             newStore.id = p.idGenerated;
+            newStore.inventories = [];
             setStores([...stores, newStore]);
             showMsg('Local agregado correctamente.', 'success', 'Éxito');
         } catch (error) {
