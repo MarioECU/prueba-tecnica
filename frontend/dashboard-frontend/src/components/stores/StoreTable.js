@@ -5,6 +5,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import InventoryView from './InventoryView';
+import { getStoreById } from '../../services/StoresService';
 
 const StoreTable = ({ showMsg }) => {
     const [stores, setStores] = useState([]);
@@ -20,6 +21,15 @@ const StoreTable = ({ showMsg }) => {
             showMsg('Error al obtener los locales: ' + error);
         }
     };
+
+    const updateStoreData = async () => {
+        try {
+            const updatedStore = await getStoreById(storeData.id);
+            setStoreData(updatedStore);
+        } catch (error) {
+            showMsg('Error al actualizar el local: ' + error);
+        }
+    }
 
     useEffect(() => {
         fetchStores();
@@ -43,7 +53,7 @@ const StoreTable = ({ showMsg }) => {
                 <Button label="Agregar local" className="p-button-raised p-button-success" onClick={() => setShowNewStoreDialog(true)} />
             </div>
             <NewStoreForm showMsg={showMsg} visible={showNewStoreDialog} onHide={() => setShowNewStoreDialog(false)} onSubmit={handleAddStore} />
-            <InventoryView storeData={storeData} showMsg={showMsg} visible={showInventoryDialog} onHide={() => setShowInventoryDialog(false)} updateData={() => fetchStores()} />
+            <InventoryView storeData={storeData} showMsg={showMsg} visible={showInventoryDialog} onHide={() => setShowInventoryDialog(false)} updateData={updateStoreData} />
             <div className="card">
                 <DataTable value={stores} paginator rows={7} dataKey="id" emptyMessage="No se encontraron locales.">
                     <Column field="id" header="ID"></Column>
