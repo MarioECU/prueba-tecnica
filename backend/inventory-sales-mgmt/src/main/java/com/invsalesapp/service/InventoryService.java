@@ -29,6 +29,7 @@ public class InventoryService {
 				request.getProductId());
 		if (inventory.isPresent()) {
 			inventory.get().setStockQty(inventory.get().getStockQty() + request.getStockQty());
+			inventoryRepository.save(inventory.get());
 		} else {
 			addProductStock(request);
 		}

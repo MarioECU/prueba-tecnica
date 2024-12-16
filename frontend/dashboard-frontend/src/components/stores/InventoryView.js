@@ -12,6 +12,8 @@ const InventoryView = ({ storeData, visible, showMsg, onHide, updateData }) => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [stockQty, setStockQty] = useState(1);
     const [store, setStore] = useState(storeData);
+    const [newStockQty, setNewStockQty] = useState(1);
+    const [editingInventoryId, setEditingInventoryId] = useState(null);
 
     const fetchProducts = async () => {
         try {
@@ -49,6 +51,18 @@ const InventoryView = ({ storeData, visible, showMsg, onHide, updateData }) => {
         }
     };
 
+    const handleConfirmUpdate = async (productId) => {
+        try {
+            await updateStock(productId, store.id, newStockQty);
+            showMsg("Inventario actualizado correctamente.", "success", "Éxito");
+            setEditingInventoryId(null);
+            setNewStockQty(1);
+            updateData();
+        } catch (error) {
+            showMsg('Error al actualizar el inventario: ' + error);
+        }
+    }
+
     return (
         <Dialog
             header={`Inventario del local: ${store.name}`}
@@ -78,6 +92,40 @@ const InventoryView = ({ storeData, visible, showMsg, onHide, updateData }) => {
                                     <p><strong>Descripción:</strong> {inventory.product.description}</p>
                                     <p><strong>Precio:</strong> ${inventory.product.price.toFixed(2)}</p>
                                     <p><strong>Stock:</strong> {inventory.stockQty}</p>
+                                    {editingInventoryId === inventory.id ? (
+                                        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                                            <InputText
+                                                value={newStockQty}
+                                                type="number"
+                                                min={1}
+                                                placeholder="Cantidad"
+                                                onChange={(e) => setNewStockQty(Number(e.target.value))}
+                                                style={{ width: "70px" }}
+                                            />
+                                            <Button
+                                                icon="pi pi-check"
+                                                className="p-button-success"
+                                                onClick={() => handleConfirmUpdate(inventory.product.id)}
+                                                tooltip="Confirmar"
+                                            />
+                                            <Button
+                                                icon="pi pi-times"
+                                                className="p-button-danger"
+                                                onClick={() => setEditingInventoryId(null)}
+                                                tooltip="Cancelar"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <Button
+                                            icon="pi pi-plus"
+                                            className="p-button-rounded p-button-success"
+                                            onClick={() => {
+                                                setEditingInventoryId(inventory.id);
+                                                setNewStockQty(1);
+                                            }}
+                                            tooltip="Agregar al stock"
+                                        />
+                                    )}
                                 </Card>
                             ))}
                         </div>
