@@ -1,0 +1,24 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /api/v1
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://172.17.0.2:5432/invsalesapp
+    username: testing
+    password: testing
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+business:
+  taxes:
+    iva: 0.15
+    ice: 0.15
