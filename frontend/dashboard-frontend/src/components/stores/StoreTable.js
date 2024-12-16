@@ -5,12 +5,14 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import InventoryView from './InventoryView';
+import SalesView from './SalesView';
 import { getStoreById } from '../../services/StoresService';
 
 const StoreTable = ({ showMsg }) => {
     const [stores, setStores] = useState([]);
     const [showNewStoreDialog, setShowNewStoreDialog] = useState(false);
     const [showInventoryDialog, setShowInventoryDialog] = useState(false);
+    const [showSalesDialog, setShowSalesDialog] = useState(false);
     const [storeData, setStoreData] = useState({ inventories: [] });
 
     const fetchStores = async () => {
@@ -54,6 +56,7 @@ const StoreTable = ({ showMsg }) => {
             </div>
             <NewStoreForm showMsg={showMsg} visible={showNewStoreDialog} onHide={() => setShowNewStoreDialog(false)} onSubmit={handleAddStore} />
             <InventoryView storeData={storeData} showMsg={showMsg} visible={showInventoryDialog} onHide={() => setShowInventoryDialog(false)} updateData={updateStoreData} />
+            <SalesView storeData={storeData} showMsg={showMsg} visible={showSalesDialog} onHide={() => setShowSalesDialog(false)} updateData={updateStoreData} />
             <div className="card">
                 <DataTable value={stores} paginator rows={7} dataKey="id" emptyMessage="No se encontraron locales.">
                     <Column field="id" header="ID"></Column>
@@ -76,7 +79,10 @@ const StoreTable = ({ showMsg }) => {
                                 <Button
                                     icon="pi pi-chart-line"
                                     className="p-button-rounded p-button-success"
-                                    onClick={() => console.log('Ver ventas:', rowData)}
+                                    onClick={() => {
+                                        setStoreData(rowData);
+                                        setShowSalesDialog(true);
+                                    }}
                                     tooltip="Ver Ventas"
                                 />
                             </div>
